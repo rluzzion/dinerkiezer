@@ -26,14 +26,30 @@ function scrollNaarResultaatOpMobiel() {
     ? "auto"
     : "smooth";
 
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      resultaatAfbeelding.scrollIntoView({
-        behavior: scrollGedrag,
-        block: "center"
-      });
+  const scrollNaarAfbeelding = () => {
+    const yPos = window.scrollY + resultaatAfbeelding.getBoundingClientRect().top - 16;
+    window.scrollTo({
+      top: Math.max(0, yPos),
+      behavior: scrollGedrag
     });
-  });
+  };
+
+  // Scroll pas wanneer de afbeelding echt gerenderd is.
+  if (resultaatAfbeelding.complete && resultaatAfbeelding.naturalHeight > 0) {
+    requestAnimationFrame(scrollNaarAfbeelding);
+    return;
+  }
+
+  const onLoad = () => {
+    scrollNaarAfbeelding();
+    resultaatAfbeelding.removeEventListener("load", onLoad);
+  };
+
+  resultaatAfbeelding.addEventListener("load", onLoad);
+  setTimeout(() => {
+    resultaatAfbeelding.removeEventListener("load", onLoad);
+    scrollNaarAfbeelding();
+  }, 350);
 }
 
 function toonResultaat(type, gekozenTekst) {
