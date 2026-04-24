@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dinerkiezer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Dinerkiezer</h1>
+    <p class="subtitle">
+      Hey poekie. Wat kies je voor vanavond?
+    </p>
+
+    <section class="card">
+      <h2>Wat wil je eten?</h2>
+      <p class="label">Selecteer een optie:</p>
+      <div class="opties-grid" id="opties-grid">
+        <button type="button" class="diner-optie" data-type="slecht">
+          <span class="optie-title">Zelf koken</span>
+        </button>
+        <button type="button" class="diner-optie" data-type="goed">
+          <span class="optie-title">Pizza bestellen</span>
+        </button>
+        <button type="button" class="diner-optie" data-type="goed">
+          <span class="optie-title">Koreaanse kip van de Kakelclub</span>
+        </button>
+        <button type="button" class="diner-optie" data-type="slecht">
+          <span class="optie-title">Sushi/Pokebowl of andere rommel</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="result card hidden" id="resultaat" aria-live="polite">
+      <h2 id="resultaat-titel"></h2>
+      <p id="resultaat-tekst"></p>
+      <img id="resultaat-afbeelding" alt="Resultaat van je dinerkeuze">
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
