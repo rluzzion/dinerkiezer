@@ -13,6 +13,17 @@ function speelAfbeeldingAnimatie(isGoedeKeuze) {
   resultaatAfbeelding.classList.add(isGoedeKeuze ? "animate-good" : "animate-bad");
 }
 
+function scrollNaarResultaatOpMobiel() {
+  if (!window.matchMedia("(max-width: 768px)").matches) {
+    return;
+  }
+
+  resultaat.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
 function toonResultaat(type, gekozenTekst) {
   resultaat.classList.remove("hidden", "good", "bad");
 
@@ -22,6 +33,7 @@ function toonResultaat(type, gekozenTekst) {
     resultaatAfbeelding.src = afbeeldingA;
     resultaatAfbeelding.alt = "Afbeelding A voor een goede keuze";
     speelAfbeeldingAnimatie(true);
+    scrollNaarResultaatOpMobiel();
     return;
   }
 
@@ -30,6 +42,7 @@ function toonResultaat(type, gekozenTekst) {
   resultaatAfbeelding.src = afbeeldingB;
   resultaatAfbeelding.alt = "Afbeelding B voor een slechte keuze";
   speelAfbeeldingAnimatie(false);
+  scrollNaarResultaatOpMobiel();
 }
 
 opties.forEach((optie) => {
