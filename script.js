@@ -6,6 +6,39 @@ const resultaatAfbeelding = document.getElementById("resultaat-afbeelding");
 
 const afbeeldingA = "ja.jpeg";
 const afbeeldingB = "nee.jpeg";
+const debugActief = true;
+
+function debugLog(bericht) {
+  if (!debugActief) {
+    return;
+  }
+
+  console.log(`[diner-debug] ${bericht}`);
+
+  let debugBox = document.getElementById("debug-log");
+  if (!debugBox) {
+    debugBox = document.createElement("div");
+    debugBox.id = "debug-log";
+    debugBox.style.position = "fixed";
+    debugBox.style.left = "10px";
+    debugBox.style.right = "10px";
+    debugBox.style.bottom = "10px";
+    debugBox.style.maxHeight = "35vh";
+    debugBox.style.overflow = "auto";
+    debugBox.style.padding = "10px";
+    debugBox.style.borderRadius = "10px";
+    debugBox.style.background = "rgba(15, 23, 42, 0.9)";
+    debugBox.style.color = "#e2e8f0";
+    debugBox.style.font = "12px/1.4 monospace";
+    debugBox.style.zIndex = "9999";
+    document.body.appendChild(debugBox);
+  }
+
+  const regel = document.createElement("div");
+  regel.textContent = `${new Date().toLocaleTimeString()} - ${bericht}`;
+  debugBox.appendChild(regel);
+  debugBox.scrollTop = debugBox.scrollHeight;
+}
 
 function speelAfbeeldingAnimatie(isGoedeKeuze) {
   resultaatAfbeelding.classList.remove("animate-good", "animate-bad");
@@ -18,7 +51,10 @@ function scrollNaarResultaatOpMobiel() {
     window.matchMedia("(max-width: 900px)").matches ||
     window.matchMedia("(pointer: coarse)").matches;
 
+  debugLog(`isMobiel=${isMobiel}, innerWidth=${window.innerWidth}, scrollY=${Math.round(window.scrollY)}`);
+
   if (!isMobiel) {
+    debugLog("Stop: niet mobiel, geen auto-scroll.");
     return;
   }
 
@@ -28,28 +64,37 @@ function scrollNaarResultaatOpMobiel() {
 
   const scrollNaarAfbeelding = () => {
     const yPos = window.scrollY + resultaatAfbeelding.getBoundingClientRect().top - 16;
+    debugLog(`Scroll naar y=${Math.round(yPos)} (gedrag=${scrollGedrag})`);
     window.scrollTo({
       top: Math.max(0, yPos),
       behavior: scrollGedrag
     });
+    setTimeout(() => {
+      debugLog(`Na scroll: scrollY=${Math.round(window.scrollY)}`);
+    }, 220);
   };
 
   // Scroll pas wanneer de afbeelding echt gerenderd is.
   if (resultaatAfbeelding.complete && resultaatAfbeelding.naturalHeight > 0) {
+    debugLog("Afbeelding is al geladen, direct scrollen.");
     requestAnimationFrame(scrollNaarAfbeelding);
+    setTimeout(scrollNaarAfbeelding, 250);
     return;
   }
 
   const onLoad = () => {
+    debugLog("load-event ontvangen op resultaatAfbeelding.");
     scrollNaarAfbeelding();
     resultaatAfbeelding.removeEventListener("load", onLoad);
   };
 
+  debugLog("Wachten op load-event van resultaatAfbeelding...");
   resultaatAfbeelding.addEventListener("load", onLoad);
   setTimeout(() => {
     resultaatAfbeelding.removeEventListener("load", onLoad);
+    debugLog("Timeout fallback: forceer scroll.");
     scrollNaarAfbeelding();
-  }, 350);
+  }, 400);
 }
 
 function toonResultaat(type, gekozenTekst) {
