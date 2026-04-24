@@ -14,13 +14,25 @@ function speelAfbeeldingAnimatie(isGoedeKeuze) {
 }
 
 function scrollNaarResultaatOpMobiel() {
-  if (!window.matchMedia("(max-width: 768px)").matches) {
+  const isMobiel =
+    window.matchMedia("(max-width: 900px)").matches ||
+    window.matchMedia("(pointer: coarse)").matches;
+
+  if (!isMobiel) {
     return;
   }
 
-  resultaat.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
+  const scrollGedrag = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? "auto"
+    : "smooth";
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      resultaatAfbeelding.scrollIntoView({
+        behavior: scrollGedrag,
+        block: "center"
+      });
+    });
   });
 }
 
